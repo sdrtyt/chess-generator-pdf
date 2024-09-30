@@ -13,9 +13,12 @@ def index():
     return render_template("index.html")
 
 
-# Route to generate the chessboard PDF
+# Route to generate the chessboard PDF with a smiley face pattern
 @app.route("/download_pdf")
 def download_pdf():
+    # Get the theme parameter from the request
+    theme = request.args.get("theme", "light")
+
     # Create an in-memory bytes buffer for the PDF
     buffer = BytesIO()
 
@@ -23,9 +26,14 @@ def download_pdf():
     c = canvas.Canvas(buffer, pagesize=A4)
     page_width, page_height = A4  # A4 dimensions (595.28 x 841.89 in points)
 
+    # Set the background color based on the theme
+    if theme == "dark":
+        background_color = colors.black
+    else:
+        background_color = colors.whitesmoke
+
     # Fill the entire page with the background color
-    c.setFillColor(colors.black)
-    # c.setFillColor(colors.white)
+    c.setFillColor(background_color)
     c.rect(0, 0, page_width, page_height, fill=True, stroke=False)
 
     # Define chessboard size (90% of the page's width)
@@ -34,15 +42,31 @@ def download_pdf():
 
     # Calculate the left margin and top margin for the chessboard
     margin_left = (page_width - chessboard_size) / 2
-    margin_top = page_height - 100  # Move the chessboard 150 points down from the top
+    margin_top = page_height - 95  # Move the chessboard 150 points down from the top
+
+    # Define the smiley face pattern using (row, col) coordinates
+    smiley_face_coords = [
+        # Eyes
+        (2, 2),
+        (2, 5),
+        # Smile
+        (5, 1),
+        (5, 2),
+        (5, 3),
+        (5, 4),
+        (5, 5),  # Bottom smile
+        (4, 2),
+        (4, 5),  # Smile curve
+    ]
 
     # Draw the 8x8 chessboard
     for row in range(8):
         for col in range(8):
-            # Alternate square colors
-            if (row + col) % 2 == 0:
-                color = colors.white
-            else:
+            # Default square color (white)
+            color = colors.white
+
+            # Fill smiley face squares with black color
+            if (row, col) in smiley_face_coords:
                 color = colors.black
 
             # Set the fill color and draw the square (no stroke/border)
@@ -66,7 +90,7 @@ def download_pdf():
 
     # Set the font for the title and draw it
     c.setFont("Helvetica", 6)  # Similar to the font used in the original file
-    c.setFillColor(colors.white)  # Set title color to black
+    c.setFillColor(colors.black)  # Set title color to black
     c.drawCentredString(page_width / 6.8, title_y_position, title_text)
 
     # Finalize the PDF

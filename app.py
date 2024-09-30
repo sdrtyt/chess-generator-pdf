@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -22,6 +22,11 @@ def download_pdf():
     # Set up canvas for the PDF file (A4 size)
     c = canvas.Canvas(buffer, pagesize=A4)
     page_width, page_height = A4  # A4 dimensions (595.28 x 841.89 in points)
+
+    # Fill the entire page with the background color
+    c.setFillColor(colors.black)
+    # c.setFillColor(colors.white)
+    c.rect(0, 0, page_width, page_height, fill=True, stroke=False)
 
     # Define chessboard size (90% of the page's width)
     chessboard_size = page_width * 0.9  # Chessboard takes 90% of the width
@@ -56,13 +61,13 @@ def download_pdf():
 
     # Calculate the position for the title below the chessboard
     title_y_position = (
-        margin_top - chessboard_size - 150
+        margin_top - chessboard_size + 25
     )  # 50 points below the chessboard
 
     # Set the font for the title and draw it
-    c.setFont("Helvetica", 4)  # Similar to the font used in the original file
-    c.setFillColor(colors.black)  # Set title color to black
-    c.drawCentredString(page_width / 2, title_y_position, title_text)
+    c.setFont("Helvetica", 6)  # Similar to the font used in the original file
+    c.setFillColor(colors.white)  # Set title color to black
+    c.drawCentredString(page_width / 6.8, title_y_position, title_text)
 
     # Finalize the PDF
     c.save()

@@ -60,7 +60,7 @@ def download_pdf():
     )  # 50 points below the chessboard
 
     # Set the font for the title and draw it
-    c.setFont("Helvetica", 10)  # Similar to the font used in the original file
+    c.setFont("Helvetica", 4)  # Similar to the font used in the original file
     c.setFillColor(colors.black)  # Set title color to black
     c.drawCentredString(page_width / 2, title_y_position, title_text)
 

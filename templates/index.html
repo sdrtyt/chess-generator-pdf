@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chessboard PDF Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 0;
+           
+        }
+        .chessboard div {
+            width: 50px;
+            height: 50px;
+        }
+        .chessboard .light {
+            background-color: #f0d9b5;
+        }
+        .chessboard .dark {
+            background-color: #b58863;
+        }
+        .container {
+            text-align: center;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chessboard">
+            <!-- Chessboard grid will be rendered dynamically using JavaScript -->
+        </div>
+        <button onclick="downloadPDF()">Download as PDF</button>
+    </div>
+
+    <script>
+        // Render the 8x8 chessboard dynamically
+        const chessboard = document.querySelector('.chessboard');
+        for (let i = 0; i < 64; i++) {
+            const square = document.createElement('div');
+            if (Math.floor(i / 8) % 2 === i % 2) {
+                square.classList.add('light');
+            } else {
+                square.classList.add('dark');
+            }
+            chessboard.appendChild(square);
+        }
+
+        // Download the PDF by triggering a request to the Flask backend
+        function downloadPDF() {
+            window.location.href = '/download_pdf';
+        }
+    </script>
+</body>
+</html>

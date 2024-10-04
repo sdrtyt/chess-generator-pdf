@@ -4,66 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chessboard PDF Generator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
     <style>
+        @font-face {
+            font-family: 'PublicSans-Light';
+            src: url('Poppins_Complete/Fonts/OTF/PublicSans-Light.otf');
+            font-weight: 100;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            color: #fff;
+            background-color: #000;
+            font-family: 'PublicSans-Light', sans-serif;
+            line-height: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #fff;
+            flex-direction: column;
         }
-        .chessboard {
-            display: grid;
-            grid-template-columns: repeat(8, 50px);
-            grid-template-rows: repeat(8, 50px);
-            gap: 0;
-           
-        }
-        .chessboard div {
-            width: 50px;
-            height: 50px;
-        }
-        .chessboard .light {
-            background-color: #f0d9b5;
-        }
-        .chessboard .dark {
-            background-color: #b58863;
-        }
+
         .container {
             text-align: center;
         }
+
+        textarea {
+            width: 600px;
+            height: 100px;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
         button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
         }
+
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            width: 480px;
+            height: 480px;
+            margin-top: 20px;
+        }
+
+        .light {
+            background-color: #f0d9b5; /* Light square color */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            color: black;
+        }
+
+        .dark {
+            background-color: #b58863; /* Dark square color */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .sampletext {
+            width: 600px;
+            font-size: 14px;
+            color: gray;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="chessboard">
-            <!-- Chessboard grid will be rendered dynamically using JavaScript -->
-        </div>
-        <button onclick="downloadPDF()">Download as PDF</button>
+        <h1>Enter Chess Game in Algebraic Notation</h1>
+        <textarea id="chessMoves" placeholder="Enter moves in algebraic notation (e.g. 1. e4 e5 2. Nf3 d6 ...)"></textarea>
+        <br>
+        <button onclick="renderChessboard()">Show Pattern</button>
+        <button onclick="generatePDF()">Download Poster</button>
+
+        <div class="sampletext">Example of prompt:<br><span>
+            e4 e5 f4 exf4 Bc4 Qh4+ Kf1 b5 Bxb5 Nf6 Nf3 Qh6 d3 Nh5 Nh4 Qg5 Nf5 c6 g4 Nf6 Rg1 cxb5 h4 Qg6 h5 Qg5 Qf3 Ng8 Bxf4 Qf6 Nc3 Bc5 Nd5 Qxb2 Bd6 Bxg1 e5 Qxa1+ Ke2 Na6 Nxg7+ Kd8 Qf6+ Nxf6 Be7#
+        </span></div>
+
+        <div id="chessboard" class="chessboard"></div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script>
-        // Render the 8x8 chessboard dynamically
-        const chessboard = document.querySelector('.chessboard');
-        for (let i = 0; i < 64; i++) {
-            const square = document.createElement('div');
-            if (Math.floor(i / 8) % 2 === i % 2) {
-                square.classList.add('light');
-            } else {
-                square.classList.add('dark');
-            }
-            chessboard.appendChild(square);
-        }
+        // Function to render chessboard on the webpage
+      function renderChessboard() {
+    const chessMoves = document.getElementById("chessMoves").value;
+    const boardElement = document.getElementById("chessboard");
+    boardElement.innerHTML = '';  // Clear existing board
 
-        // Download the PDF by triggering a request to the Flask backend
-        function downloadPDF() {
-            window.location.href = '/download_pdf';
+    // Create the chessboard dynamically (8x8 grid)
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const square = document.createElement("div");
+            square.className = ((row + col) % 2 === 0) ? "light" : "dark";
+            boardElement.appendChild(square);
+        }
+    }
+
+    // Create a chess instance and apply the moves
+    const chess = new Chess();
+    const moves = chessMoves.split(/\s+/).filter(move => !move.match(/^\d+\./));  // Remove numbers
+    moves.forEach(move => chess.move(move));
+
+    // Place the pieces on the board based on the final position
+    const squares = boardElement.querySelectorAll("div");
+    const board = chess.board();
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const piece = board[row][col];
+            if (piece) {
+                const pieceSymbol = piece.type.toUpperCase();
+                squares[row * 8 + col].textContent = piece.color === 'w' ? pieceSymbol : pieceSymbol.toLowerCase();
+            }
+        }
+    }
+}
+
+        // Function to generate PDF (same as before)
+        function generatePDF() {
+            const moves = document.getElementById("chessMoves").value;
+            const encodedMoves = encodeURIComponent(moves);
+            window.location.href = `/download_pdf?moves=${encodedMoves}`;
         }
     </script>
 </body>

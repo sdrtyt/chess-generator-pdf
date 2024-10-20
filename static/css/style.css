@@ -1,0 +1,143 @@
+:root {
+    --primary-color: #000000;
+    --secondary-color: #ffffff;
+    --accent-color: #444444;
+    --hover-color: #f0f0f0;
+    --font-size-desktop: 16px;
+    --font-size-mobile: 12px;
+    --button-bg-color: #111111;
+    --button-text-color: #ffffff;
+    --button-border-color: #ffffff;
+}
+/* Font face for custom font */
+@font-face {
+    font-family: 'PPRadioGrotesk';
+    src: url('https://cdn.prod.website-files.com/62b40f9047a2fa5889db7afd/66d6c52c82fbbbadd0679d8f_PPRadioGrotesk-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+body {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    font-family: 'PPRadioGrotesk', sans-serif;
+    font-smooth: always;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+}
+#two-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: space-between;
+    width: 100%;
+}
+.content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 16px;
+}
+.generator {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+/* Headings */
+h1 {
+    font-weight: 400;
+    font-size: var(--font-size-desktop);
+    letter-spacing: 1px;
+    color: var(--secondary-color);
+    margin-bottom: 16px;
+}
+.input-moves {
+    background-color: var(--secondary-color);
+    padding: 8px 8px 32px 8px;
+    border: none;
+    color: #646464;
+    font-size: 1rem;
+}
+button {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-size: 1rem;
+    border: 1px solid var(--button-border-color);
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: var(--accent-color);
+}
+#chessBoard {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    margin-top: 1rem;
+}
+.cell {
+    aspect-ratio: 1 / 1;
+    transition: background-color 0.2s ease;
+}
+/* Famous games buttons */
+.famous-games {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.famous-games button {
+    font-family: 'PPRadioGrotesk', sans-serif;
+    flex: 1 0 auto;
+    padding: 12px 24px;
+    text-align: center;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-border-color);
+    transition: background-color 0.3s ease;
+}
+.famous-games button:hover {
+    background-color: var(--accent-color);
+}
+.primary {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 12px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.primary:hover {
+    background-color: #D9D9D9;
+}
+/* Mobile styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: var(--font-size-mobile);
+    }
+    input, button {
+        font-size: var(--font-size-mobile);
+        padding: 8px;
+    }
+    #two-columns {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .famous-games {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .famous-games button {
+        width: 100%;
+    }
+    .primary {
+        width: 100%;
+    }
+}
